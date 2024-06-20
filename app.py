@@ -1,6 +1,6 @@
 from dash import Dash, dcc, html, Input, Output, callback,State,ctx
 import os
-import dash_daq as daq
+
 import pickle
 from utils import *
 from collections import Counter

@@ -33,15 +33,33 @@ with open('gobernaciones.pkl','rb') as gbfile:
     gobernaciones=pickle.load(gbfile)
 cat_list=['Capitales','Gobernaciones']
 app.layout = html.Div([
-    dcc.Dropdown(id='categories',options=[{'label':i,'value':i} for i in cat_list],value='Capitales'),
-    dcc.Input(id='tag-input',type='text',placeholder='Put some keyword'),
-    html.Button('Add Tag',id='add-btn'),
-    dcc.Dropdown(id='tag-in',multi=True),
+    html.H2('Análisis de clusters por palabras Clave', style={'text-align': 'center', 'margin-bottom': '20px'}),
+    html.H3('Proyectos de infraestructura tecnológica en Capitales y gobernaciones de Colombia', style={'text-align': 'center', 'margin-bottom': '30px'}),
     
-    #html.Div(id='display-keywords'),
-    html.Div(id='treemap-chart')
-])
-
+    html.Div([
+        dcc.Input(id='tag-input', type='text', placeholder='Escribir palabra clave', style={'width': '60%', 'margin-right': '10px'}),
+        html.Button('Agregar palabra clave', id='add-btn')
+    ], style={'display': 'flex', 'justify-content': 'center', 'margin-bottom': '30px'}),
+    
+    html.Div([
+        dcc.Dropdown(
+            id='categories', 
+            options=[{'label': i, 'value': i} for i in cat_list], 
+            value='Capitales', 
+            style={'flex': '1', 'margin-right': '10px'}
+        ),
+        dcc.Dropdown(
+            id='tag-in', 
+            multi=True, 
+            style={'flex': '2'}
+        )
+    ], style={'display': 'flex', 'justify-content': 'center', 'margin-bottom': '30px'}),
+    
+    dcc.Loading(id='loading1',children=[html.Div(id='treemap-chart', style={'width': '90%', 'margin': '0 auto', 'text-align': 'center'})],type='cube'),
+    
+    # Add CSS for dropdown arrow visibility
+    
+], style={'max-width': '1500px', 'margin': '0 auto'})  # Center the container on the page
 
 
 @callback(Output('tag-in', 'options') ,
@@ -68,6 +86,7 @@ def display_value(nclicks,value,options,opts_value):
         
         if value is not None and value.strip()!='':
             tags_list=[option['label'] for option in options]
+            value=value.lower()
             if value not in tags_list:
                 #tags_obj.tags.append(value.lower())
                 options.append({'label':value,'value':value})

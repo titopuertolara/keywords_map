@@ -9,7 +9,7 @@ import numpy as np
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = Dash(__name__, external_stylesheets=external_stylesheets)
+app = Dash(__name__, external_stylesheets=external_stylesheets,title='Edgelands')
 
 server = app.server
 def get_percent(variable,value,ref_dict):

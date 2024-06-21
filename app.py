@@ -34,7 +34,7 @@ with open('gobernaciones.pkl','rb') as gbfile:
 cat_list=['Capitales','Gobernaciones']
 app.layout = html.Div([
     html.H2('Análisis de clusters por palabras Clave', style={'text-align': 'center', 'margin-bottom': '20px'}),
-    html.H3('Proyectos de infraestructura tecnológica en Capitales y gobernaciones de Colombia', style={'text-align': 'center', 'margin-bottom': '30px'}),
+    html.H3('Proyectos estratégicos de infraestructura tecnológica en capitales y gobernaciones de Colombia', style={'text-align': 'center', 'margin-bottom': '30px'}),
     
     html.Div([
         dcc.Input(id='tag-input', type='text', placeholder='Escribir palabra clave', style={'width': '60%', 'margin-right': '10px'}),

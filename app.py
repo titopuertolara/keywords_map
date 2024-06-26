@@ -32,6 +32,8 @@ with open('capitales.pkl','rb') as cpfile:
 with open('gobernaciones.pkl','rb') as gbfile:
     gobernaciones=pickle.load(gbfile)
 cat_list=['Capitales','Gobernaciones']
+color_scales=px.colors.named_colorscales()
+
 app.layout = html.Div([
     html.H2('Análisis de clusters por palabras Clave', style={'text-align': 'center', 'margin-bottom': '20px'}),
     html.H3('Proyectos estratégicos de infraestructura tecnológica en capitales y gobernaciones de Colombia', style={'text-align': 'center', 'margin-bottom': '30px'}),
@@ -51,11 +53,14 @@ app.layout = html.Div([
         dcc.Dropdown(
             id='tag-in', 
             multi=True, 
-            style={'flex': '2'}
+            style={'flex': '2'},
+            
         )
     ], style={'display': 'flex', 'justify-content': 'center', 'margin-bottom': '30px'}),
+    dcc.Dropdown(id='colorstyle',options=[{'label':i,'value':i} for i in color_scales],value='fall',style={'flex': '1','width':'30%'}),
     
-    dcc.Loading(id='loading1',children=[html.Div(id='treemap-chart', style={'width': '90%', 'margin': '0 auto', 'text-align': 'center'})],type='cube'),
+    dcc.Loading(id='loading1',children=[html.Div(id='treemap-chart', style={'width': '90%', 'margin': '0 auto', 'text-align': 'center'})],type='cube')
+    
     
     # Add CSS for dropdown arrow visibility
     
@@ -67,7 +72,8 @@ app.layout = html.Div([
           [Input('add-btn','n_clicks'),
            State('tag-input', 'value'),
            State('tag-in','options'),
-           State('tag-in','value')])
+           State('tag-in','value')
+           ])
 def display_value(nclicks,value,options,opts_value):
     print('opciones',options)
     #print(value)
@@ -81,7 +87,7 @@ def display_value(nclicks,value,options,opts_value):
     #    tags_obj.tags=[]
 
 
-    
+   
     if ctx.triggered_id=='add-btn':
         
         if value is not None and value.strip()!='':
@@ -103,9 +109,10 @@ def display_value(nclicks,value,options,opts_value):
 @callback(Output('treemap-chart','children'),
           Output('tag-in','options' ,allow_duplicate=True),
           [Input('tag-in','value'),
+          Input('colorstyle','value'),
            Input('categories','value')], prevent_initial_call=True)
-def plot_chart(key_tags,category):
-    
+def plot_chart(key_tags,colorstyle,category):
+   
     if key_tags is None:
         key_tags=[]
     if len(key_tags)==0:
@@ -149,7 +156,7 @@ def plot_chart(key_tags,category):
         #print(melted_df)
         fig = px.treemap(melted_df[melted_df['value']!=0], path=[px.Constant('Keywords'), 'variable', 'location'], values='value',
                   color='value', hover_data={'value':False,'percentage':False},
-                  color_continuous_scale='geyser',
+                  color_continuous_scale=colorstyle,
                   custom_data=['percentage', 'location'],
 
                 )
